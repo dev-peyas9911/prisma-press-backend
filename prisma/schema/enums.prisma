@@ -20,7 +20,7 @@ enum CommentStatus {
   REJECT
 }
 
-enum SubscriptionStatus{
+enum SubscriptionStatus {
   ACTIVE
   CANCELED
   EXPIRED
