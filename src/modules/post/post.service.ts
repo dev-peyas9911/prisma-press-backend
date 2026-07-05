@@ -27,7 +27,7 @@ const getAllPosts = async () => {
   return posts;
 };
 
-const getPostById = async () => {};
+const getPostById = async (postId: string) => {};
 
 const updatePost = async () => {};
 
@@ -35,7 +35,34 @@ const deletePost = async () => {};
 
 const getPostsStats = async () => {};
 
-const getMyPosts = async () => {};
+const getMyPosts = async (authorId: string) => {
+  const result = await prisma.post.findMany({
+    where: {
+      authorId,
+    },
+
+    orderBy: {
+      createdAt: "desc",
+    },
+
+    include: {
+      comments: true,
+      author: {
+        omit: {
+          password: true,
+        },
+      },
+
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
+    },
+  });
+
+  return result;
+};
 
 export const postService = {
   createPost,
