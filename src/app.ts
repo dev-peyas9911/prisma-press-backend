@@ -1,4 +1,4 @@
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, { application, Application, NextFunction, Request, Response } from "express";
 import cors from "cors";
 import config from "./config";
 import cookieParser from "cookie-parser";
@@ -9,6 +9,7 @@ import { commentRoutes } from "./modules/comment/comment.route";
 import { notFound } from "./middlewares/notFound";
 import httpStatus from "http-status";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
+import { subscriptionRoutes } from "./modules/subscription/subscription.route";
 
 const app: Application = express();
 
@@ -18,6 +19,10 @@ app.use(
     credentials: true,
   }),
 );
+
+const endpointSecret = config.stripe_webhook_secret;
+
+app.use("/api/subscription/webhook", express.raw({type: "application/json"}))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,6 +39,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 
 app.use("/api/comments", commentRoutes);
+
+app.use("/api/subscription", subscriptionRoutes);
 
 // app.use((req: Request, res: Response) => {
 //   res.status(404).json({
